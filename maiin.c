@@ -19,7 +19,7 @@ int choose_exit()
 
 	bool is_finish = false;
 
-	fprintf(stdout, "Do u wanna exit ? (Y/N)");
+	fprintf(stdout, "Do u wanna exit ? (y/N)");
 
 
 	char choosing = fgetc(stdin);
@@ -43,7 +43,7 @@ int dump_stack(struct Stack* stk, enum ERRNO error)
 
 
 		fprintf(stderr, "Stack <%s>[%p] created by <%s> at <%s:%d>\n{\n\t", stk->name, &stk, stk->func_name, stk->file_name, stk->line);
-			fprintf(stderr, "1)size = <%zu (or signed <%lld>)>\n\t", stk->size, (ssize_t) stk->size;
+			fprintf(stderr, "1)size = <%zu (or signed <%lld>)>\n\t", stk->size, (ssize_t) stk->size);
 			fprintf(stderr, "2)capacity = <%zu (or signed <%lld>)>\n\t", stk->capacity, (ssize_t) stk->capacity);
 
 			if (error == NULL_PTR_STKBUF) return -fprintf(stderr, "NULL PTR on STACK BUFFER\n");
