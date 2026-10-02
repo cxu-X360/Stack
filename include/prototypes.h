@@ -19,18 +19,16 @@
 	//Stack manage
 
 	int fill_poison(struct Stack* stk);
-	int stack_init(struct Stack* stk, size_t capacity DEBUG_ON(
-			,const char* name
 
-			,const char* file_name
-			,const char* func_name
-			,const int line
-			));
+	int stack_init(struct Stack* stk, size_t capacity);
 
 	int resize_up(struct Stack* stk);
 	int resize_down(struct Stack* stk);
 
 	int stack_push(struct Stack* stk, double value);
 	int stack_pop(struct Stack* stk, double* value);
+
+	int stack_destroy(struct Stack* stk);
+
 
 #endif

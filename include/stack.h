@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#define STKDEBUG
 
 #ifdef STKDEBUG
 	#define DEBUG_ON(...) __VA_ARGS__
@@ -13,9 +14,29 @@
 	#define DEBUG_ON(...)
 #endif
 
+#define DEBUG_FIELDS 	DEBUG_ON(     \
+			const char* name;     \
+								      \
+			const char* file_name;    \
+			const char* func_name;    \
+			unsigned int line;  \
+			const char* time;         \
+			const char* date;         \
+			) 
+
+#define DEBUG_PARAMS DEBUG_ON(         \
+			,const char* name      \
+			                           \
+			, const char* file_name    \
+			, const char* func_name    \
+			, unsigned int line  \
+			, const char* time         \
+			, const char* date         \
+			)
 
 
-#define __VAR_NAME__(var) #var
+
+#define VAR_NAME(var) #var
 
 
 
@@ -38,15 +59,8 @@ enum ERRNO
 
 struct Stack
 {
-	DEBUG_ON(
-			const char* name;
 
-			const char* file_name;
-			const char* func_name;
-			const int line;
-			)
-
-
+	DEBUG_FIELDS
 
 	double* data;
 

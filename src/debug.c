@@ -1,7 +1,6 @@
 #include "..\include\prototypes.h"
 #include "..\include\stack.h"
 
-
 void clear_buffer()  //очищает стандартный буффер ввода до \n включительно вызовами getchar()
 {
 	char _ = 0;
@@ -34,7 +33,7 @@ int dump_stack(struct Stack* stk, enum ERRNO error)
 		if (error == NULL_PTR_STK) return -fprintf(stderr, "NULL PTR STACK\n");
 
 
-		fprintf(stderr, "Stack <%s>[%p] created by <%s> at <%s:%d>\n{\n\t", stk->name, &stk, stk->func_name, stk->file_name, stk->line);
+		fprintf(stderr, "[%s:%s] Stack <%s>[%p] created by <%s> at <%s:%d>\n{\n\t", stk->date, stk->time, stk->name, &stk, stk->func_name, stk->file_name, stk->line);
 			fprintf(stderr, "1)size = <%zu (or signed <%lld>)>\n\t", stk->size, (ssize_t) stk->size);
 			fprintf(stderr, "2)capacity = <%zu (or signed <%lld>)>\n\t", stk->capacity, (ssize_t) stk->capacity);
 
@@ -51,7 +50,7 @@ int dump_stack(struct Stack* stk, enum ERRNO error)
 
 				for (size_t i = stk->size; i < stk->capacity; i++)
 				{
-					fprintf(stderr, " [%zu] = <%g>[%p]\n\t\t", i, POISON, NULL);
+					fprintf(stderr, " [%zu] = <%g>[%p]\n\t\t", i, DBL_POISON, NULL);
 				}
 
 		fprintf(stderr, "\n");
@@ -70,7 +69,7 @@ int dump_stack(struct Stack* stk, enum ERRNO error)
 
 int verificator(struct Stack* stk)
 {
-	printf("verificator started\n");
+	DEBUG_ON(printf("verificator started\n"));
 	if (stk == NULL) {fprintf(stderr, "stk null pltr\n"); return NULL_PTR_STK; }
 
 	if ((ssize_t) (stk->capacity) <= 0 || (ssize_t) (stk->size) < 0) {printf("cap <= 0\n");return LESS_ZERO_CAP; }
@@ -79,7 +78,7 @@ int verificator(struct Stack* stk)
 
 	if (stk->size > stk->capacity){fprintf(stderr, "stk_buf null pltr\n"); return OUT_OF_RANGE;}
 
-	printf("verificator correct\n");
+	DEBUG_ON(printf("verificator correct\n"));
 	return 0;
 }
 

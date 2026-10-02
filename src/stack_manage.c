@@ -12,17 +12,24 @@ int fill_poison(struct Stack* stk)
 	return 0;
 }
 
-int stack_init(struct Stack* stk, size_t capacity 	DEBUG_ON(
-			,const char* name
-
-			,const char* file_name
-			,const char* func_name
-			,const int line
-			))
+int stack_init(struct Stack* stk, size_t capacity)
 {	
 	//Initialisation
 	stk->capacity = capacity;
 	stk->size = 0;
+
+	#ifdef STKDEBUG
+
+		stk->file_name = __FILE__;
+		stk->func_name = __FUNCTION__;
+
+		stk->time = __TIME__;
+		stk->date = __DATE__;
+
+
+		stk->line =  __LINE__;
+
+	#endif
 
 	printf("I CHECK_ERROR in init\n");
 	CHECK_ERROR(stk)
@@ -112,4 +119,29 @@ int stack_pop(struct Stack* stk, double* value)
 	CHECK_ERROR(stk)
 
 	return 0;
+}
+
+int stack_destroy(struct Stack* stk)
+{
+	CHECK_ERROR(stk)
+
+	#ifdef STKDEBUG
+
+		stk->file_name = "";
+		stk->func_name = "";
+
+		stk->time = "";
+		stk->date = "";
+
+
+		stk->line = 0;
+
+
+
+	#endif
+
+	free(stk->data);
+
+	stk->capacity = 0;
+	stk->size = 0;
 }
