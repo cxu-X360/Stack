@@ -1,3 +1,6 @@
+#ifndef STACK_H
+#define STACK_H
+
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -14,9 +17,12 @@
 
 #define __VAR_NAME__(var) #var
 
-#define CHECK_ERROR(stk) if(enum ERRNO error = verificator(stk)) {dump_stack(stk, error); choose_exit();} 
 
-#define POISON nan
+
+#define INT_POISON  0xB110A
+#define DBL_POISON  nan
+
+
 
 enum ERRNO
 {
@@ -47,3 +53,5 @@ struct Stack
 	size_t capacity;
 	size_t size;
 };
+
+#endif

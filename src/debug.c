@@ -1,11 +1,6 @@
-#define STKDEBUG  //TURN ON-OFF by delete/set comment
+#include "..\include\prototypes.h"
+#include "..\include\stack.h"
 
-#include "stack.h"
-
-#define debug_push(stk, val) do {stack_push(&(stk), (val)); print_stack(&(stk));} while(0)
-#define debug_pop(stk) do {double term_var = 0; stack_pop(&(stk), &(term_var)); print_stack(&(stk));} while(0)
-
-#define print_var_val(...) fprintf(...) 
 
 void clear_buffer()  //очищает стандартный буффер ввода до \n включительно вызовами getchar()
 {
@@ -19,7 +14,7 @@ int choose_exit()
 
 	bool is_finish = false;
 
-	fprintf(stdout, "Do u wanna exit ? (y/N)");
+	fprintf(stdout, "Do u wanna exit ? (y/N)\n");
 
 
 	char choosing = fgetc(stdin);
@@ -28,9 +23,6 @@ int choose_exit()
 	if (choosing == 'Y' || choosing == 'y' ) {fprintf(stdout, "Goodbye!!\n"); exit(-1);}
 
 	return 0;
-
-
-
 }
 
 int dump_stack(struct Stack* stk, enum ERRNO error)
@@ -79,14 +71,15 @@ int dump_stack(struct Stack* stk, enum ERRNO error)
 int verificator(struct Stack* stk)
 {
 	printf("verificator started\n");
-	if (stk == NULL) {return NULL_PTR_STK; }
+	if (stk == NULL) {fprintf(stderr, "stk null pltr\n"); return NULL_PTR_STK; }
 
 	if ((ssize_t) (stk->capacity) <= 0 || (ssize_t) (stk->size) < 0) {printf("cap <= 0\n");return LESS_ZERO_CAP; }
 
-	if (stk->data == NULL) {return NULL_PTR_STKBUF; }
+	if (stk->data == NULL) {fprintf(stderr, "stk_buf null pltr\n"); return NULL_PTR_STKBUF;}
 
-	if (stk->size > stk->capacity) return OUT_OF_RANGE;
+	if (stk->size > stk->capacity){fprintf(stderr, "stk_buf null pltr\n"); return OUT_OF_RANGE;}
 
+	printf("verificator correct\n");
 	return 0;
 }
 
@@ -100,137 +93,4 @@ int print_stack(struct Stack* stk)
 	}
 
 	printf("]: capacity = <%zu>, size = <%zu>\n", stk->capacity, stk->size);
-}
-
-int fill_poison(struct Stack* stk)
-{
-
-	for (int i = stk->size; i < stk->capacity; i++)
-	{
-		stk->data[i] = NAN;
-	}
-
-	return 0;
-}
-
-int stack_init(struct Stack* stk, size_t capacity)
-{	
-	//Initialisation
-	stk->capacity = capacity;
-	stk->size = 0;
-
-	printf("I CHECK_ERROR in init\n");
-	CHECK_ERROR(stk)
-
-	stk->data = (double* ) calloc(capacity, sizeof(double));
- 
-	printf("II CHECK_ERROR in init\n");
-	CHECK_ERROR(stk)
-
-	fill_poison(stk);
-
-
-	printf("III CHECK_ERROR in init\n");
-	CHECK_ERROR(stk)
-
-	return 0;
-}
-
-int resize_up(struct Stack* stk)
-{
-	CHECK_ERROR(stk);
-
-	if (stk->size > stk->capacity) return OUT_OF_RANGE;
-
-	if (stk->size == stk->capacity) 
-	{
-		stk->data = realloc(stk->data, (stk->capacity *= 2) * sizeof(double));
-		fill_poison(stk);
-	}
-
-	CHECK_ERROR(stk)
-	
-
-	return 0;
-}
-
-int resize_down(struct Stack* stk)
-{
-	CHECK_ERROR(stk)
-
-	if (stk->size <= stk->capacity / 4)
-	{
-		stk->data = realloc(stk->data, ((stk->capacity > 5) ? (stk->capacity /= 2) : 5) * sizeof(double));
-	}
-
-	CHECK_ERROR(stk)
-
-	return 0;
-}
-
-
-int stack_push(struct Stack* stk, double value)
-{
-	CHECK_ERROR(stk)
-
-	resize_up(stk);
-
-	stk->data[stk->size]= value;
-
-	(stk->size)++;
-
-	CHECK_ERROR(stk)
-
-	return 0;
-}
-
-int stack_pop(struct Stack* stk, double* value)
-{
-	CHECK_ERROR(stk)
-
-	if (stk->size == 0)
-	{
-		fprintf(stderr, "UNDERFLOW error, u cant pop any element, cause there nothing to pop. I will pass this command\n");
-		return STACK_UNDERFLOW;
-	}
-
-	stk->size--;
-
-	*value = stk->data[stk->size];
-
-	resize_down(stk);
-
-	fill_poison(stk);
-
-	printf("poped val = %g\n", *value);
-
-	CHECK_ERROR(stk)
-
-	return 0;
-
-}
-
-int main()
-{
-	struct Stack stk1 = {};
-
-	stack_init(&stk1, 100);
-
-	print_stack(&stk1);
-
-	stk1.size = -1;
-
-	for (double i = 0; i < 25.0; i++)
-	{
-		debug_push(stk1, i);
-	}
-
-	for (double i = 0; i < 25.0; i++)
-	{
-		debug_pop(stk1);
-	}
-	debug_pop(stk1);
-
-
-	return 0;
 }
