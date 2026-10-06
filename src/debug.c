@@ -1,4 +1,3 @@
-#include "..\include\prototypes.h"
 #include "..\include\stack.h"
 
 void clear_buffer()  //очищает стандартный буффер ввода до \n включительно вызовами getchar()
@@ -9,7 +8,8 @@ void clear_buffer()  //очищает стандартный буффер вво
 
 int choose_exit()
 {
-	fprintf(stderr, "----------------------------------------------------------------------------------------------\n");
+
+	fprintf(stderr, "----------------------------------------------------------------------------------------------\n\n\n\n");
 
 	bool is_finish = false;
 
@@ -30,15 +30,27 @@ int dump_stack(struct Stack* stk, enum ERRNO error)
 
 		fprintf(stderr, "\n\nSTACK_DUMP\n----------------------------------------------------------------------------------------------\n");	
 
+			fprintf(stderr, "ERROR_Num = <%d>..... Error codes \n{\n", error);
+			fprintf(stderr, "	NO_ERROR = 0,\n\t"
+							"LESS_ZERO_CAP = -1,\n\t"
+							"NULL_PTR_STK = -2,\n\t"
+							"NULL_PTR_STKBUF = -3,\n\t"
+							"OUT_OF_RANGE = -4,\n\t"
+							"STACK_UNDERFLOW = -5,\n\t"
+							"CANARY_PROTECT = -6, \n}\n");
+
 		if (error == NULL_PTR_STK) return -fprintf(stderr, "NULL PTR STACK\n");
 
 
 		fprintf(stderr, "[%s:%s] Stack <%s>[%p] created by <%s> at <%s:%d>\n{\n\t", stk->date, stk->time, stk->name, &stk, stk->func_name, stk->file_name, stk->line);
-			fprintf(stderr, "1)size = <%zu (or signed <%lld>)>\n\t", stk->size, (ssize_t) stk->size);
-			fprintf(stderr, "2)capacity = <%zu (or signed <%lld>)>\n\t", stk->capacity, (ssize_t) stk->capacity);
+			fprintf(stderr, "size = <%zu (or signed <%lld>)>\n\t", stk->size, (ssize_t) stk->size);
+			fprintf(stderr, "capacity = <%zu (or signed <%lld>)>\n\t", stk->capacity, (ssize_t) stk->capacity);
+
+			fprintf(stderr, "start_canary = <0x%x>\n\t", (long long int) stk->start_canary);
+			fprintf(stderr, "end_canary = <0x%x>\n\t", (long long int) stk->end_canary);
 
 			if (error == NULL_PTR_STKBUF) return -fprintf(stderr, "NULL PTR on STACK BUFFER\n");
-			fprintf(stderr, "3)data[%zu] = \n{\n\t", stk->capacity);
+			fprintf(stderr, "data[%zu] = \n{\n\t", stk->capacity);
 
 				if (error == LESS_ZERO_CAP) return -fprintf(stderr, "LESS OR ZERO CAPACITY or SIZE");
 				if (error == OUT_OF_RANGE) return -fprintf(stderr, "OUT_OF_RANGE - SIZE > capacity");
@@ -55,13 +67,8 @@ int dump_stack(struct Stack* stk, enum ERRNO error)
 
 		fprintf(stderr, "\n");
 
-		fprintf(stderr, "ERROR_Num = <%d>..... Error codes \n{\n", error);
-			fprintf(stderr, "	NO_ERROR = 0,\n\t"
-							"LESS_ZERO_CAP = -1,\n\t"
-							"NULL_PTR_STK = -2,\n\t"
-							"NULL_PTR_STKBUF = -3,\n\t"
-							"OUT_OF_RANGE = -4,\n\t"
-							"STACK_UNDERFLOW = -5,\n\t");
+
+
 
 
 	#endif
@@ -70,13 +77,19 @@ int dump_stack(struct Stack* stk, enum ERRNO error)
 int verificator(struct Stack* stk)
 {
 	DEBUG_ON(printf("verificator started\n"));
-	if (stk == NULL) {fprintf(stderr, "stk null pltr\n"); return NULL_PTR_STK; }
+	if (stk == NULL) {fprintf(stdout, "stk null pltr\n"); return NULL_PTR_STK;}
 
-	if ((ssize_t) (stk->capacity) <= 0 || (ssize_t) (stk->size) < 0) {printf("cap <= 0\n");return LESS_ZERO_CAP; }
+	if ((ssize_t) (stk->capacity) <= 0 || (ssize_t) (stk->size) < 0) {fprintf(stdout, "cap <= 0\n");return LESS_ZERO_CAP; }
 
-	if (stk->data == NULL) {fprintf(stderr, "stk_buf null pltr\n"); return NULL_PTR_STKBUF;}
+	if (stk->data == NULL) {fprintf(stdout, "stk_buf null pltr\n"); return NULL_PTR_STKBUF;}
 
-	if (stk->size > stk->capacity){fprintf(stderr, "stk_buf null pltr\n"); return OUT_OF_RANGE;}
+	if (stk->size > stk->capacity){fprintf(stdout, "stk_buf null pltr\n"); return OUT_OF_RANGE;}
+
+	#ifdef CANARY
+
+		if (stk->start_canary != START_CAN_VAL || stk->end_canary != END_CAN_VAL) {fprintf(stdout, "Canaries a crying, help them ;(\n"); return WRONG_CANARIES;}
+
+	#endif
 
 	DEBUG_ON(printf("verificator correct\n"));
 	return 0;

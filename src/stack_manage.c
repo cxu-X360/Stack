@@ -1,4 +1,3 @@
-#include "..\include\prototypes.h"
 #include "..\include\stack.h"
 
 int fill_poison(struct Stack* stk)
@@ -14,6 +13,9 @@ int fill_poison(struct Stack* stk)
 
 int stack_init(struct Stack* stk, size_t capacity)
 {	
+	if (verificator(stk) == NULL_PTR_STK) {fprintf(stdout, "NULL PTR STACK\n"); choose_exit();}
+
+
 	//Initialisation
 	stk->capacity = capacity;
 	stk->size = 0;
@@ -31,8 +33,12 @@ int stack_init(struct Stack* stk, size_t capacity)
 
 	#endif
 
-	printf("I CHECK_ERROR in init\n");
-	CHECK_ERROR(stk)
+	#ifdef CANARY
+
+		stk->start_canary = START_CAN_VAL;
+		stk->end_canary = END_CAN_VAL;
+
+	#endif
 
 	stk->data = (double* ) calloc(capacity, sizeof(double));
  
@@ -102,7 +108,10 @@ int stack_pop(struct Stack* stk, double* value)
 
 	if (stk->size == 0)
 	{
-		fprintf(stderr, "UNDERFLOW error, u cant pop any element, cause there nothing to pop. I will pass this command\n");
+		fprintf(stdout, "UNDERFLOW error, u cant pop any element, cause there nothing to pop. I will pass this command\n");
+		dump_stack(stk, STACK_UNDERFLOW);
+		choose_exit();
+
 		return STACK_UNDERFLOW;
 	}
 
@@ -135,8 +144,6 @@ int stack_destroy(struct Stack* stk)
 
 
 		stk->line = 0;
-
-
 
 	#endif
 

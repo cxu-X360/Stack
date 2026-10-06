@@ -1,10 +1,9 @@
 #ifndef PROTOTYPES_H
-#define PROTOTYPES_H 
-	#include "stack.h" 
+#define PROTOTYPES_H 	
+	
 	
 
-
-	#define CHECK_ERROR(stk) if(enum ERRNO error = verificator(stk)) {dump_stack(stk, error); choose_exit();} 
+	#define CHECK_ERROR(stk) if(enum ERRNO error = verificator(stk)) {dump_stack(stk, error); choose_exit(); } 
 
 	void clear_buffer();
 

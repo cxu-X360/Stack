@@ -7,6 +7,7 @@
 #include <math.h>
 
 #define STKDEBUG
+#define CANARY
 
 #ifdef STKDEBUG
 	#define DEBUG_ON(...) __VA_ARGS__
@@ -14,25 +15,36 @@
 	#define DEBUG_ON(...)
 #endif
 
+#ifdef CANARY
+	#define CANARY_ON(...) __VA_ARGS__
+#else
+	#define CANARY_ON(...)
+#endif
+
+
+
 #define DEBUG_FIELDS 	DEBUG_ON(     \
-			const char* name;     \
+			const char* name;         \
 								      \
 			const char* file_name;    \
 			const char* func_name;    \
-			unsigned int line;  \
+			unsigned int line;        \
 			const char* time;         \
 			const char* date;         \
 			) 
 
 #define DEBUG_PARAMS DEBUG_ON(         \
-			,const char* name      \
+			,const char* name          \
 			                           \
 			, const char* file_name    \
 			, const char* func_name    \
-			, unsigned int line  \
+			, unsigned int line        \
 			, const char* time         \
 			, const char* date         \
 			)
+
+#define START_CAN_VAL (double) 0xC00C01D
+#define END_CAN_VAL (double) 0xC418
 
 
 
@@ -52,8 +64,10 @@ enum ERRNO
 	NULL_PTR_STK = -2,
 	NULL_PTR_STKBUF = -3,
 	OUT_OF_RANGE = -4,
-	STACK_UNDERFLOW = -5,
+	STACK_UNDERFLOW = -5,	
+	WRONG_CANARIES = -6,
 };
+
 
 
 
@@ -62,10 +76,19 @@ struct Stack
 
 	DEBUG_FIELDS
 
+	CANARY_ON (double start_canary;)
+
 	double* data;
+
+	CANARY_ON (double end_canary;)
 
 	size_t capacity;
 	size_t size;
 };
+
+
+#include "prototypes.h"
+
+
 
 #endif
