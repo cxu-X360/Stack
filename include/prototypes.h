@@ -1,16 +1,14 @@
 #ifndef PROTOTYPES_H
 #define PROTOTYPES_H 	
 	
-	
-
-	#define CHECK_ERROR(stk) if(enum ERRNO error = verificator(stk)) {dump_stack(stk, error); choose_exit(); } 
+	#define CHECK_ERROR(stk) if(enum ERRNO error = verificator(stk)) {dump_stack(stderr, stk, error); dump_stack(stdout, stk, error); choose_exit(); } 
 
 	void clear_buffer();
 
 	//Debuging
 
 	int choose_exit();
-	int dump_stack(struct Stack* stk, enum ERRNO error);
+	int dump_stack(FILE* stream, struct Stack* stk, enum ERRNO error);
 	int verificator(struct Stack* stk);
 	int print_stack(struct Stack* stk);
 
@@ -28,6 +26,5 @@
 	int stack_pop(struct Stack* stk, double* value);
 
 	int stack_destroy(struct Stack* stk);
-
 
 #endif

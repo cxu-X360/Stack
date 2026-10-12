@@ -17,12 +17,12 @@ int main()
 
 	print_stack(&stk1);
 
-
 	for (double i = 0; i < 25.0; i++)
 	{
 		debug_push(stk1, i);
 	}
 
+	stk1.size = -1;
 
 	for (double i = 0; i < 25.0; i++)
 	{

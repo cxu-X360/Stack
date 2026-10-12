@@ -21,8 +21,6 @@
 	#define CANARY_ON(...)
 #endif
 
-
-
 #define DEBUG_FIELDS 	DEBUG_ON(     \
 			const char* name;         \
 								      \
@@ -45,12 +43,10 @@
 
 #define START_CAN_VAL (double) 0xC00C01D
 #define END_CAN_VAL (double) 0xC418
-
-
+#define START_DATA_CAN_VAL (double) 0xAC00C01D
+#define END_DATA_CAN_VAL (double) 0xAC418
 
 #define VAR_NAME(var) #var
-
-
 
 #define INT_POISON  0xB110A
 #define DBL_POISON  nan
@@ -60,7 +56,7 @@
 enum ERRNO
 {
 	NO_ERROR = 0,
-	LESS_ZERO_CAP = -1,
+	LESS_ZERO_CAP_OR_SIZE = -1,
 	NULL_PTR_STK = -2,
 	NULL_PTR_STKBUF = -3,
 	OUT_OF_RANGE = -4,
@@ -68,27 +64,20 @@ enum ERRNO
 	WRONG_CANARIES = -6,
 };
 
-
-
-
 struct Stack
 {
+	CANARY_ON (double start_canary;)
 
 	DEBUG_FIELDS
 
-	CANARY_ON (double start_canary;)
-
 	double* data;
-
-	CANARY_ON (double end_canary;)
 
 	size_t capacity;
 	size_t size;
+
+	CANARY_ON (double end_canary;)
 };
 
-
 #include "prototypes.h"
-
-
 
 #endif
