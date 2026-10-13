@@ -12,13 +12,13 @@
 #ifdef STKDEBUG
 	#define DEBUG_ON(...) __VA_ARGS__
 #else
-	#define DEBUG_ON(...)
+	#define DEBUG_ON(...) ;
 #endif
 
 #ifdef CANARY
 	#define CANARY_ON(...) __VA_ARGS__
 #else
-	#define CANARY_ON(...)
+	#define CANARY_ON(...) ;
 #endif
 
 #define DEBUG_FIELDS 	DEBUG_ON(     \
@@ -51,6 +51,9 @@
 #define INT_POISON  0xB110A
 #define DBL_POISON  nan
 
+#define FUNC_START DEBUG_ON(printf("%s started\n", __FUNCTION__);)
+#define FUNC_END DEBUG_ON(printf("%s ended\n", __FUNCTION__);)
+
 
 
 enum ERRNO
@@ -71,6 +74,7 @@ struct Stack
 	DEBUG_FIELDS
 
 	double* data;
+	double* raw_data;
 
 	size_t capacity;
 	size_t size;

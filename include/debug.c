@@ -85,7 +85,7 @@ int dump_stack(FILE* stream, struct Stack* stk, enum ERRNO error)
 					else fprintf(stream, " - INCORRECT\n\t");
 				#endif
 
-		fprintf(stream, "\n");
+		fprintf(stream, "}\n");
 	#endif
 }
 
